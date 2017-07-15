@@ -12,6 +12,99 @@
 </head>
 <body>
 
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="jumbotron text-center">
+					<h1>Train Scheduler</h1>
+				
+				</div>
+			</div>
+		</div>
+
+		<br>
+
+
+ <!-- this is the train schedule -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Current Train Schedule</h3>
+					</div>
+					<div class="panel-body">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>Train Name</th>
+									<th>Destination</th>
+									<th>Frequency (min)</th>
+									<th>Next Arrival</th>
+									<th>Minutes Away</th>
+								</tr>
+							</thead>
+							<tbody id="table-body">
+								<tr>
+									<td>somehting</td>
+									<td>somehting</td>
+									<td>somehting</td>
+									<td>somehting</td>
+									<td>somehting</td>
+								</tr>
+							</tbody>
+					  		
+						</table>
+					</div>
+				</div>
+				
+			</div>
+			
+		</div>
+
+
+<!-- add the train section with from -->
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Add Train</h3>
+					</div>
+					<div class="panel-body">
+						
+						<form>
+							<div class="form-group">
+								<label for="train-name">Train Name</label>
+								<input type="text" class="form-control" id="train-name" placeholder="i.e. Thomas">
+							</div>
+							<div class="form-group">
+								<label for="train-destination">Destination</label>
+								<input type="text" class="form-control" id="train-destination" placeholder="i.e. london">
+							</div>
+							<div class="form-group">
+								<label for="train-time">First Train Time (HH:mm - military time)</label>
+								<input type="text" class="form-control" id="train-time" placeholder="i.e. 21:00">
+							</div>
+							<div class="form-group">
+								<label for="train-frequency">Frequency (min)</label>
+								<input type="text" class="form-control" id="train-frequency" placeholder="i.e. 30">
+							</div>
+							
+							<button type="submit" class="btn btn-default">Submit</button>
+						</form>						
+
+
+
+					</div>  
+				</div> 
+				
+			</div> <!-- end of col 12 -->
+			
+		</div> <!-- end of row --> 
+
+	</div> <!-- end of container -->
+
+	
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
