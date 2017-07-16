@@ -146,6 +146,9 @@ function dateToString(date, minutes) {
 		final_hour = 12;
 	}
 
+	if (final_hour < 10 ) 
+		final_hour = "0" + final_hour;
+
 	return final_hour + ":" + final_min + " " + pm_am;
 
 }
