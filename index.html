@@ -15,8 +15,9 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
+				<br>
 				<div class="jumbotron text-center">
-					<h1>Train Scheduler</h1>
+					<h1><span class="glyphicon glyphicon-road"></span> Train Scheduler</h1>
 				
 				</div>
 			</div>
@@ -72,7 +73,7 @@
 					</div>
 					<div class="panel-body">
 						
-						<form>
+						<form id="submit-id">
 							<div class="form-group">
 								<label for="train-name">Train Name</label>
 								<input type="text" class="form-control" id="train-name" placeholder="i.e. Thomas">
@@ -90,21 +91,35 @@
 								<input type="text" class="form-control" id="train-frequency" placeholder="i.e. 30">
 							</div>
 							
-							<button type="submit" class="btn btn-default">Submit</button>
+							<button type="submit" class="btn btn-default" >Submit</button>
 						</form>						
 
 
 
 					</div>  
 				</div> 
-				
+
 			</div> <!-- end of col 12 -->
 			
 		</div> <!-- end of row --> 
 
+		<div class="row">
+			<div class="col-md-12">
+				<h1 id="bigOne"></h1>
+				
+			</div>
+			
+		</div>
+
 	</div> <!-- end of container -->
 
-	
+
+<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase-messaging.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
