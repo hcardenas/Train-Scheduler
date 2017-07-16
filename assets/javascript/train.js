@@ -12,8 +12,6 @@ firebase.initializeApp(config);
 
 var database = firebase.database().ref('/trains/0');
 
-console.log(database);
-
 $("#submit-id").on("submit", function(event) {
 	event.preventDefault();
 	addTrain();
@@ -23,23 +21,37 @@ $("#submit-id").on("submit", function(event) {
 
 function addTrain() {
 	firebase.database().ref("trains/").once("value").then(function(snap) {
-		var trainArr = snap.val().length;
+		var trainArr = snap.val();
+		var alreadyExistsFlag = false;
 
-		var trainName =$("#train-name").val().trim();
-		var trainDestination =$("#train-destination").val().trim();
+		var trainName =$("#train-name").val().trim().toLowerCase();
+		var trainDestination =$("#train-destination").val().trim().toLowerCase();
 		var trainTime =$("#train-time").val().trim();
 		var trainFrequency =$("#train-frequency").val().trim();
 
+		trainName = trainName.replaceAt(0, trainName.charAt(0).toUpperCase() );
+		trainDestination = trainDestination.replaceAt(0 , trainDestination.charAt(0).toUpperCase() );
 
+		for (var i = 0; i < trainArr.length; i++) {
+			if (trainArr[i].name === trainName)
+				alreadyExistsFlag = true;
+		}
 
-		firebase.database().ref('trains/' + (trainArr)).set({
-			"name" : trainName,
-			"destination" : trainDestination,
-			"frequency" : trainFrequency,
-			"firstTrainTime" : trainTime
-		});
+		if (!alreadyExistsFlag) {
+			firebase.database().ref('trains/' + trainArr.length).set({
+				"name" : trainName,
+				"destination" : trainDestination,
+				"frequency" : trainFrequency,
+				"firstTrainTime" : trainTime
 
-		update_train();
+			});
+			update_train();
+		}
+		else {
+			alert("Train already Exists!");
+		}
+
+		
 	});
 
 
@@ -52,7 +64,7 @@ function update_train() {
 	tableBody.empty();
 
 	firebase.database().ref("trains/").once("value").then(function(snap) {
-		console.log(snap.val());
+		
 		var trainArr = snap.val();
 
 		var trTag;
@@ -64,24 +76,37 @@ function update_train() {
 
 		var date;
 		var dateString ;
+		var timeLeft;
+
+		var currentMin;
+		var arrivalMin;
 
 		for (var i = 0; i < trainArr.length; i++) {
 			date =  new Date();
 			dateString = dateToString(date, trainArr[i].frequency);
- 
+
+			arrivalMin = parseInt( parseInt( dateString.charAt(3) + dateString.charAt(4)) );
+			currentMin = date.getMinutes() ;
+			if (arrivalMin == "00" ) 
+ 				arrivalMin = 60;
+
+ 			
+ 			timeLeft = arrivalMin - currentMin ;
+ 			
+ 			
 
 			trTag = $("<tr>");
 			tdTagName = $("<td>").text(trainArr[i].name);
 			tdTagDestiny = $("<td>").text(trainArr[i].destination);
 			tdTagFrequency = $("<td>").text(trainArr[i].frequency);
-			tdTagNextArrival = $("<td>").text(trainArr[i].frequency);
-			tdTagMinutesAway = $("<td>").text(trainArr[i].frequency);
+			tdTagNextArrival = $("<td>").text(dateString);
+			tdTagMinutesAway = $("<td>").text(Math.abs(timeLeft));
 
 
 			trTag.append(tdTagName);
 			trTag.append(tdTagDestiny);
 			trTag.append(tdTagFrequency);
-			trTag.append(dateString);
+			trTag.append(tdTagNextArrival);
 			trTag.append(tdTagMinutesAway);
 
 			tableBody.append(trTag);
@@ -91,24 +116,48 @@ function update_train() {
 }
 
 function dateToString(date, minutes) {
-	var newDate = addMinutes(date, minutes);
-	var hours = parseInt(newDate.getHours());
-	var minutesString = newDate.getMinutes();
 	var pm_am;
-	if (hours >= 12) {
-		pm_am = "PM";
-		hours -=12
-	}
-	else {
-		pm_am = "AM"
+	var final_hour;
+	var final_min;
+	
+	
+	var noMinDate = subMinutes(date, parseInt(date.getMinutes()));
+
+	while (date.getTime() > noMinDate.getTime()) {
+		noMinDate = addMinutes(noMinDate, parseInt(minutes));
 	}
 
-	return hours + ":" + minutesString + " " + pm_am;
+	final_hour = parseInt(noMinDate.getHours());
+	final_min = parseInt(noMinDate.getMinutes());
+
+	if (final_hour > 12) {
+		pm_am = "PM";
+		final_hour -= 12; 
+	}
+	else {
+		pm_am = "AM";
+	}
+	
+	if (final_min < 10) {
+		final_min = "0" + final_min;
+	}
+	
+
+	return final_hour + ":" + final_min + " " + pm_am;
+
 }
 
 function addMinutes(date, minutes) {
     return new Date(date.getTime() + minutes*60000);
 }
 
+function subMinutes(date, minutes) {
+    return new Date(date.getTime() - minutes*60000);
+}
+String.prototype.replaceAt=function(index, replacement) {
+    return this.substr(0, index) + replacement+ this.substr(index + replacement.length);
+}
+
 
 update_train();
+setInterval(update_train, 1000 * 60);
