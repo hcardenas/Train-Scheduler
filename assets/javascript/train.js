@@ -72,11 +72,16 @@ function update_train() {
 		var date;
 		var newArrivalDate;
 		var dateString ;
+
+		 
 		
 
 		for (var i = 0; i < trainArr.length; i++) {
 			date =  new Date();
 			frequencyMinutes = trainArr[i].frequency;
+
+			var arrivingSoonFlag = false;
+			var trainArrivedFlag = false;
 
 			newArrivalDate = arrivalDate(date, frequencyMinutes);
 			dateString = arrivalDateToString(date, newArrivalDate);
@@ -86,11 +91,32 @@ function update_train() {
 
  			minuteAway = parseInt(minuteAway.getMinutes());
 
- 			
+ 			if (minuteAway === 0) {
+ 				minuteAway += " - arrived";
+ 				trainArrivedFlag = true;
+ 			}
 
- 			
+ 			else if (minuteAway <= 3 && minuteAway >= 0 ) {
+ 				minuteAway += " - arriving soon";
+ 				trainArrivedFlag = true;
+ 			}
+ 			else if (minuteAway <= 10 && minuteAway > 3) {
+ 				minuteAway += " - Close to port";
+ 				arrivingSoonFlag = true;
+ 			}
+
+
 
 			trTag = makeTableRow(trainArr[i].name, trainArr[i].destination, frequencyMinutes, dateString, minuteAway);
+			
+			if (trainArrivedFlag) {
+ 				trTag.addClass("danger");
+ 			}
+
+ 			if (arrivingSoonFlag) {
+ 				trTag.addClass("warning");
+ 			}
+
 			tableBody.append(trTag);
 		}
 
