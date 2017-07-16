@@ -68,68 +68,73 @@ function update_train() {
 		var trainArr = snap.val();
 
 		var trTag;
-		var tdTagName;
-		var tdTagDestiny;
-		var tdTagFrequency;
-		var tdTagNextArrival;
-		var tdTagMinutesAway;
 
 		var date;
+		var newArrivalDate;
 		var dateString ;
-		var timeLeft;
-
-		var currentMin;
-		var arrivalMin;
+		
 
 		for (var i = 0; i < trainArr.length; i++) {
 			date =  new Date();
-			dateString = dateToString(date, trainArr[i].frequency);
+			frequencyMinutes = trainArr[i].frequency;
 
-			arrivalMin = parseInt( parseInt( dateString.charAt(3) + dateString.charAt(4)) );
-			currentMin = date.getMinutes() ;
+			newArrivalDate = arrivalDate(date, frequencyMinutes);
+			dateString = arrivalDateToString(date, newArrivalDate);
 
-			if (arrivalMin == "00" ) 
- 				arrivalMin = 60;
+
+ 			var minuteAway = new Date(newArrivalDate.getTime() - date.getTime());
+
+ 			minuteAway = parseInt(minuteAway.getMinutes());
 
  			
- 			timeLeft = arrivalMin - currentMin ;
+
  			
- 			
 
-			trTag = $("<tr>");
-			tdTagName = $("<td>").text(trainArr[i].name);
-			tdTagDestiny = $("<td>").text(trainArr[i].destination);
-			tdTagFrequency = $("<td>").text(trainArr[i].frequency);
-			tdTagNextArrival = $("<td>").text(dateString);
-			tdTagMinutesAway = $("<td>").text(Math.abs(timeLeft));
-
-
-			trTag.append(tdTagName);
-			trTag.append(tdTagDestiny);
-			trTag.append(tdTagFrequency);
-			trTag.append(tdTagNextArrival);
-			trTag.append(tdTagMinutesAway);
-
+			trTag = makeTableRow(trainArr[i].name, trainArr[i].destination, frequencyMinutes, dateString, minuteAway);
 			tableBody.append(trTag);
 		}
 
 	});
 }
 
-function dateToString(date, minutes) {
-	var pm_am;
-	var final_hour;
-	var final_min;
-	
-	
+function makeTableRow(name, destination, frequency, arrivalTime, minuteAway) {
+	var trTag = $("<tr>");
+	var tdTagName = $("<td>").text(name);
+	var tdTagDestiny = $("<td>").text(destination);
+	var tdTagFrequency = $("<td>").text(frequency);
+	var tdTagNextArrival = $("<td>").text(arrivalTime);
+	var tdTagMinutesAway = $("<td>").text(minuteAway);
+
+
+	trTag.append(tdTagName);
+	trTag.append(tdTagDestiny);
+	trTag.append(tdTagFrequency);
+	trTag.append(tdTagNextArrival);
+	trTag.append(tdTagMinutesAway);
+
+	return trTag;
+}
+
+function arrivalDate(date, minutes) {
 	var noMinDate = subMinutes(date, parseInt(date.getMinutes()));
 
 	while (date.getTime() > noMinDate.getTime()) {
 		noMinDate = addMinutes(noMinDate, parseInt(minutes));
 	}
 
-	final_hour = parseInt(noMinDate.getHours());
-	final_min = parseInt(noMinDate.getMinutes());
+	return noMinDate;
+
+}
+
+function arrivalDateToString(date, newArrivalDate) {
+	var pm_am;
+	var final_hour;
+	var final_min;
+
+
+
+	final_hour = parseInt(newArrivalDate.getHours());
+	final_min = parseInt(newArrivalDate.getMinutes());
 
 	if (final_hour > 12) {
 		pm_am = "PM";
