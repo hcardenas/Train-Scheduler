@@ -87,6 +87,7 @@ function update_train() {
 
 			arrivalMin = parseInt( parseInt( dateString.charAt(3) + dateString.charAt(4)) );
 			currentMin = date.getMinutes() ;
+
 			if (arrivalMin == "00" ) 
  				arrivalMin = 60;
 
@@ -133,8 +134,7 @@ function dateToString(date, minutes) {
 	if (final_hour > 12) {
 		pm_am = "PM";
 		final_hour -= 12; 
-	}
-	else {
+	} else {
 		pm_am = "AM";
 	}
 	
@@ -142,6 +142,9 @@ function dateToString(date, minutes) {
 		final_min = "0" + final_min;
 	}
 	
+	if (final_hour == "0") {
+		final_hour = 12;
+	}
 
 	return final_hour + ":" + final_min + " " + pm_am;
 
