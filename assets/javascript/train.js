@@ -21,12 +21,39 @@ $("#submit-id").on("submit", function(event) {
 $("#table-body").on("click", ".edit-btn" , function(event){
 	var button = $(this);
 	var index = button.attr("btn");
+	var tableRow = $("#table-body .row-"+index);
 
+	if (button.hasClass("btn-primary")) {
+		console.log("toogle edit row");
+		editRow(index);
+	}
+	else {
+		console.log("update changes, remove edit row");
+	}
+
+	
+
+	
 	button.toggleClass("btn-primary btn-danger");
-
-	console.log($("#table-body .row-"+index));
 });
 
+function editRow(index) {
+	var editRowName = $("tr.row-"+index + " td:eq(1)");
+	var editRowDestination = $("tr.row-"+index + " td:eq(2)");
+	var editRowFrequency = $("tr.row-"+index + " td:eq(3)");
+
+	for (var i = 1; i <= 3; ++i) {
+		var tableCell = $("tr.row-"+index + " td:eq("+i+")");
+		var form = $("<form>");
+		var input = $("<input type='text' class='form-control input-"+i+"'>").val(tableCell.text());
+
+		form.append(input);
+		
+		tableCell.empty();
+		tableCell.append(form);
+	}
+
+}
 
 function addTrain() {
 	firebase.database().ref("trains/").once("value").then(function(snap) {
@@ -62,10 +89,8 @@ function addTrain() {
 
 		
 	});
-
-
-	
 }
+
 
 
 function update_train() {
@@ -132,11 +157,7 @@ function update_train() {
 	});
 }
 
-function editRow() {
-	console.log("this is sparta");
 
-
-}
 
 function makeTableRow(name, destination, frequency, arrivalTime, minuteAway, index) {
 	var trTag = $("<tr>").addClass("row-"+index);
