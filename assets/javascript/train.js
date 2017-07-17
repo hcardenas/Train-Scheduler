@@ -31,13 +31,14 @@ $("#submit-id").on("submit", function(event) {
 // editrow function 
 // **************************
 $("#table-body").on("click", ".edit-btn" , function(event){
+	event.preventDefault();
 	var button = $(this);
 	var index = button.attr("btn");
 	var tableRow = $("#table-body .row-"+index);
 
 	if (button.hasClass("btn-primary")) {
 		console.log("toogle edit row");
-		editRow(index);
+		toggleEditRow(index);
 	}
 	else {
 		console.log("update changes, remove edit row");
@@ -48,36 +49,52 @@ $("#table-body").on("click", ".edit-btn" , function(event){
 
 	
 	button.toggleClass("btn-primary btn-danger");
+	return false;
 });
 
 
 // **************************
-// not done
+// updates the database depending the input from the 
+// table row 
 // **************************
 function updateDataBase(index) {
-	var name =  $("tr.row-"+index + " td:eq(1)").text();
-	console.log("this is supposed to make magic happen");
+	var newName =  $("tr.row-"+index + " td:eq(1)").children().val();
+	var newDestination = $("tr.row-"+index + " td:eq(2)").children().val();
+	var newFrequency = $("tr.row-"+index + " td:eq(3)").children().val();
+	$("tr.row-"+index).empty();
+
+	firebase.database().ref('trains/' + index).update({
+		name : newName,
+		destination: newDestination,
+		frequency: newFrequency
+
+	});
+
+	update_train();
+
 }
+
 
 // **************************
 // function that grabs a table row
 // information and puts it in a input tag to
 // edit
 // **************************
-function editRow(index) {
+function toggleEditRow(index) {
 	var editRowName = $("tr.row-"+index + " td:eq(1)");
 	var editRowDestination = $("tr.row-"+index + " td:eq(2)");
 	var editRowFrequency = $("tr.row-"+index + " td:eq(3)");
 
+	console.log(editRowName.text());
+
 	for (var i = 1; i <= 3; ++i) {
 		var tableCell = $("tr.row-"+index + " td:eq("+i+")");
-		var form = $("<form>");
+		
 		var input = $("<input type='text' class='form-control input-"+i+"'>").val(tableCell.text());
 
-		form.append(input);
 		
 		tableCell.empty();
-		tableCell.append(form);
+		tableCell.append(input);
 	}
 
 }
@@ -110,7 +127,7 @@ function addTrain() {
 		}
 
 		// pushes the new train if it doesnt already exit
-		if (!alreadyExistsFlag) {
+		if (!alreadyExistsFlag && trainName !== "") {
 			firebase.database().ref('trains/' + trainArr.length).set({
 				"name" : trainName,
 				"destination" : trainDestination,
@@ -121,7 +138,7 @@ function addTrain() {
 			update_train();
 		}
 		else {
-			alert("Train already Exists!");
+			alert("Train already Exists or fields are empty.");
 		}
 
 		
