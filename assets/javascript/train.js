@@ -18,6 +18,15 @@ $("#submit-id").on("submit", function(event) {
 	return false;
 });
 
+$("#table-body").on("click", ".edit-btn" , function(event){
+	var button = $(this);
+	var index = button.attr("btn");
+
+	button.toggleClass("btn-primary btn-danger");
+
+	console.log($("#table-body .row-"+index));
+});
+
 
 function addTrain() {
 	firebase.database().ref("trains/").once("value").then(function(snap) {
@@ -74,9 +83,9 @@ function update_train() {
 		var dateString ;
 
 		 
-		
-
-		for (var i = 0; i < trainArr.length; i++) {
+		for (var i in trainArr ) {
+			
+		//for (var i = 0; i < trainArr.length; i++) {
 			date =  new Date();
 			frequencyMinutes = trainArr[i].frequency;
 
@@ -92,12 +101,12 @@ function update_train() {
  			minuteAway = parseInt(minuteAway.getMinutes());
 
  			if (minuteAway === 0) {
- 				minuteAway += " - arrived";
+ 				minuteAway += " - Arrived";
  				trainArrivedFlag = true;
  			}
 
  			else if (minuteAway <= 3 && minuteAway >= 0 ) {
- 				minuteAway += " - arriving soon";
+ 				minuteAway += " - Arriving soon";
  				trainArrivedFlag = true;
  			}
  			else if (minuteAway <= 10 && minuteAway > 3) {
@@ -107,7 +116,7 @@ function update_train() {
 
 
 
-			trTag = makeTableRow(trainArr[i].name, trainArr[i].destination, frequencyMinutes, dateString, minuteAway);
+			trTag = makeTableRow(trainArr[i].name, trainArr[i].destination, frequencyMinutes, dateString, minuteAway, i);
 			
 			if (trainArrivedFlag) {
  				trTag.addClass("danger");
@@ -123,15 +132,32 @@ function update_train() {
 	});
 }
 
-function makeTableRow(name, destination, frequency, arrivalTime, minuteAway) {
-	var trTag = $("<tr>");
+function editRow() {
+	console.log("this is sparta");
+
+
+}
+
+function makeTableRow(name, destination, frequency, arrivalTime, minuteAway, index) {
+	var trTag = $("<tr>").addClass("row-"+index);
+	trTag.attr("table-row", index);
+
+	var editGlyph = $("<span>").addClass("glyphicon glyphicon-edit");
+
+	var button = $("<button>").addClass("btn btn-primary btn-xs edit-btn");
+	button.attr("btn", index);
+
+	button.append(editGlyph);
+
+	var tdEditTable = $("<td>").append(button);
+
 	var tdTagName = $("<td>").text(name);
 	var tdTagDestiny = $("<td>").text(destination);
 	var tdTagFrequency = $("<td>").text(frequency);
 	var tdTagNextArrival = $("<td>").text(arrivalTime);
 	var tdTagMinutesAway = $("<td>").text(minuteAway);
 
-
+	trTag.append(tdEditTable);
 	trTag.append(tdTagName);
 	trTag.append(tdTagDestiny);
 	trTag.append(tdTagFrequency);
@@ -156,8 +182,6 @@ function arrivalDateToString(date, newArrivalDate) {
 	var pm_am;
 	var final_hour;
 	var final_min;
-
-
 
 	final_hour = parseInt(newArrivalDate.getHours());
 	final_min = parseInt(newArrivalDate.getMinutes());

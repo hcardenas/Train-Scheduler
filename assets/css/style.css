@@ -14,6 +14,8 @@
 
 }
 
+
+
 .panel-heading {
 	background-color: rgb(39, 40, 34) !important;
 }
@@ -24,4 +26,5 @@
 
 th {
 	font-weight: bold;
+	text-decoration: underline;
 }
